@@ -2787,9 +2787,6 @@ int handleClientsWithPendingWritesUsingThreads(void) {
         return handleClientsWithPendingWrites();
     }
 
-    /* Start threads if needed. */
-    if (!io_threads_active) startThreadedIO();
-
     if (tio_debug) printf("%d TOTAL WRITE pending clients\n", processed);
 
     /* Distribute the clients across N different lists. */
@@ -2812,6 +2809,9 @@ int handleClientsWithPendingWritesUsingThreads(void) {
         int count = listLength(io_threads_list[j]);
         io_threads_pending[j] = count;
     }
+    
+    /* Start threads if needed. */
+    if (!io_threads_active) startThreadedIO();
 
     /* Wait for all threads to end their work. */
     while(1) {
